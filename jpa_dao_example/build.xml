@@ -193,6 +193,13 @@
 <!--        	<jvmarg value="-Dlog4j.configuration=file:log4j.properties"/> -->
 				<jvmarg value="-XX:-UseSplitVerifier"/>
         </java>
+				<java classname="org.junit.runner.JUnitCore" classpathref="run.classpath" fork="true">
+		        	<arg value="com.liaison.commons.jpa.JPATest"/>
+		<!--        
+					<jvmarg value="-Dlog4j.configuration=file:log4j.properties"/>
+		-->
+		        </java>
+
 		
 	</target>
 	
