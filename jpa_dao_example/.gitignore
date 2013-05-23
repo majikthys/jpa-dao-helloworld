@@ -1,0 +1,8 @@
+src/main/scripts/schema/_G2HelloWorld.sql
+src/main/scripts/template/_provisionDB.sql
+.classpath
+.project
+datanucleus.log
+target/classes
+lib/META-INF/persistence.xml
+target/META-INF/persistence.xml
