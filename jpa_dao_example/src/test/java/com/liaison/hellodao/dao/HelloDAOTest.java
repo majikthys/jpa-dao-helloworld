@@ -5,19 +5,17 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServlet;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.*;
 
 import com.liaison.commons.jpa.DAOUtil;
 import com.liaison.commons.jpa.Op;
-import com.liaison.commons.util.PrintUtil;
 import com.liaison.commons.util.InitInitialContext;
+import com.liaison.commons.util.PrintUtil;
 import com.liaison.hellodao.model.HelloMoon;
 import com.liaison.hellodao.model.HelloWorld;
+
 
 
 public class HelloDAOTest
@@ -32,20 +30,21 @@ public class HelloDAOTest
 		_dao = new HelloDAO();
 		_initDao = new InitTestData(); 
 		_initDao.initTestData();
+		
 	}
 
-	@AfterClass
+	//AfterClass TODO why does this error?
 	public static void tearDownAfterClass() throws Exception
 	{
 		_initDao.deleteTestData();
 	}
 
-	@Before
+	@BeforeTest
 	public void setUp() throws Exception
 	{
 	}
 
-	@After
+	@AfterTest
 	public void tearDown() throws Exception
 	{
 	}

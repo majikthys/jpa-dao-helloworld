@@ -23,13 +23,15 @@ public class DAOUtil
 		}
 		catch ( Throwable t )
 		{
-		}
-	    finally
-	    {
+//just moved TODO remove this comment
             if ( tx.isActive() )
             {
                 tx.rollback();
             }
+            throw ( t );
+		}
+	    finally
+	    {
             
             if ( em != null )
             {

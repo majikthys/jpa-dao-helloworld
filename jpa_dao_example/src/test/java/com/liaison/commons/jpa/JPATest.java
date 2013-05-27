@@ -1,10 +1,8 @@
 package com.liaison.commons.jpa;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+
+import org.testng.annotations.*;
 
 import com.liaison.commons.util.PrintUtil;
 
@@ -25,12 +23,12 @@ public class JPATest
 		_initData.deleteTestData();
 	}
 
-	@Before
+	@BeforeTest
 	public void setUp() throws Exception
 	{
 	}
 
-	@After
+	@AfterTest
 	public void tearDown() throws Exception
 	{
 	}
