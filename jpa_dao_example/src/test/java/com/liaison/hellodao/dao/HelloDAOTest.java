@@ -1,16 +1,20 @@
 package com.liaison.hellodao.dao;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.RandomStringUtils;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.*;
 import org.testng.annotations.*;
-import static org.testng.AssertJUnit.*;
 
 import com.liaison.commons.jpa.DAOUtil;
 import com.liaison.commons.jpa.Operation;
@@ -19,89 +23,121 @@ import com.liaison.hellodao.model.HelloMoon;
 import com.liaison.hellodao.model.HelloWorld;
 
 
-
-public class HelloDAOTest
-{
+public class HelloDAOTest {
 	static HelloDAO _dao = null;
-//	static InitTestData _initDao = null; 
-	
+
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception
-	{
+	public static void setUpBeforeClass() throws Exception {
 		InitInitialContext.init();
 		_dao = new HelloDAO();
 		initHelloWorldDaos();
 	}
 
-	@AfterClass //TODO why does this error?
-	public void tearDownAfterClass() throws Exception
-	{
+	@AfterClass
+	// TODO why does this error?
+	public void tearDownAfterClass() throws Exception {
 		deleteTestData();
 	}
-
-	@BeforeTest
-	public void setUp() throws Exception
-	{
-	}
-
-	@AfterTest
-	public void tearDown() throws Exception
-	{
-	}
 	
+	
+
+	/**
+	 * Checks for Saturn's moons
+	 * @throws Exception
+	 */
 	@Test
-	public void testFindWorlds() throws Exception
-	{
-    	long iTime = System.currentTimeMillis();
-		
-    	Operation op = new Operation()
-    	{
+	public void testFindWorldsAndMoonsHappyPath() throws Exception {
+		Operation op = new Operation() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public <T> List<T> perform( EntityManager em ) throws Exception
-			{
-				List<T> list = (List<T>) _dao.findHelloWorld( em, normalizeSGUID( TEST_WORLD_SIID + "A" ) );
-				return ( (List<T>) list );
+			public <T> List<T> perform(EntityManager em) throws Exception {
+				List<T> list = (List<T>) _dao.findHelloWorld(em,
+						normalizeSGUID(Planet.SATURN.siSGUID));
+				return ((List<T>) list);
 			}
-    	};
-    	
-    	List<Object []> list = DAOUtil.<Object []>fetch( op );
-		
-    	assertTrue( "list greater then zero",  list.size() > 0 );
-    	
-		for ( Object [] oar : list )
-    	{
-			HelloWorld helloWorld = null;
-			HelloMoon helloMoon = null;
-    		
-    		for ( Object obj : oar )
-	    	{
-	        	if ( obj instanceof HelloWorld )
-	            { 
-	        		helloWorld = (HelloWorld)obj;
-	            }
-	            else if ( obj instanceof HelloMoon )
-	            {
-	            	helloMoon = (HelloMoon)obj;
-	            }
-	            else
-	            {
-	            	assertTrue( "Object Type Expected", false );
-	            }
-	    	}
+		};
 
-        	assertTrue( "Fetched Expected Objects",  helloWorld != null && helloMoon != null );
-    	}
-	
-    	//PrintUtil.timePrint( "testFindWorlds", iTime );
+		List<Object[]> list = DAOUtil.<Object[]> fetch(op);
+
+		List<HelloWorld> helloWorlds = new ArrayList<HelloWorld>();
+		List<HelloMoon> helloMoons = new ArrayList<HelloMoon>();
+		List<String> helloMoonNames = new ArrayList<String>();
+		
+		for (Object[] oar : list) {
+			for (Object obj : oar) {
+				if (obj instanceof HelloWorld) {
+					helloWorlds.add( (HelloWorld) obj);
+				} else if (obj instanceof HelloMoon) {
+					helloMoons.add((HelloMoon) obj);
+					helloMoonNames.add(((HelloMoon) obj).getName());
+				} else {
+					fail("Only expecting moons and worlds");
+				}
+			}
+		}
+
+		assertThat(helloWorlds.size(), greaterThan(0));
+		assertThat(helloWorlds.get(0).getName(), equalTo(Planet.SATURN.toString()));
+		assertThat(helloMoons,	hasSize(Planet.SATURN.moons.size()));	
+		assertThat(helloMoonNames.toArray(new String[helloMoonNames.size()]),	arrayContainingInAnyOrder(Planet.SATURN.getMoons().toArray(new String[helloMoonNames.size()])));
+
+
 	}
+	
+	
+	/**
+	 * Checks for EARTH and JUPITER Moons
+	 * @throws Exception
+	 */
+	@Test
+	public void testFindOtherWorldsAndMoonsHappyPath() throws Exception {
+		Operation op = new Operation() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public <T> List<T> perform(EntityManager em) throws Exception {
+				List<T> list = (List<T>) _dao.findHelloWorld(em,
+						normalizeSGUID(Planet.EARTH.siSGUID)); //We know EARTH AND JUPITER HAVE SAME SGUID
+				return ((List<T>) list);
+			}
+		};
+
+		List<Object[]> list = DAOUtil.<Object[]> fetch(op);
+
+		List<HelloWorld> helloWorlds = new ArrayList<HelloWorld>();
+		List<HelloMoon> helloMoons = new ArrayList<HelloMoon>();
+		List<String> helloMoonNames = new ArrayList<String>();
+		Set<String> helloWorldNames = new HashSet<String>();
+		
+		for (Object[] oar : list) {
+			for (Object obj : oar) {
+				if (obj instanceof HelloWorld) {
+					helloWorlds.add( (HelloWorld) obj);
+					helloWorldNames.add(((HelloWorld) obj).getName());
+				} else if (obj instanceof HelloMoon) {
+					helloMoons.add((HelloMoon) obj);
+					helloMoonNames.add(((HelloMoon) obj).getName());
+				} else {
+					fail("Only expecting moons and worlds");
+				}
+			}
+		}
+
+		List<String> moonNames = new ArrayList<String>();
+		moonNames.addAll(Planet.JUPITER.getMoons());
+		moonNames.addAll(Planet.EARTH.getMoons());
+		
+		assertThat(helloWorlds.size(), greaterThan(0));
+		assertThat(helloWorldNames.toArray(new String[helloWorldNames.size()]),	arrayContainingInAnyOrder(new String[] {Planet.EARTH.toString(), Planet.JUPITER.toString()}));
+		assertThat(helloMoons,	hasSize(Planet.JUPITER.moons.size()+Planet.EARTH.getMoons().size()));			
+		assertThat(helloMoonNames.toArray(new String[helloMoonNames.size()]),	arrayContainingInAnyOrder(moonNames.toArray(new String[moonNames.size()])));
+	}
+	
 	
 	@Test
-	public void testFindWorldsAgain() throws Exception
-	{
-		testFindWorlds();
+	public void testFindWorldsAgain() throws Exception {
+		testFindWorldsAndMoonsHappyPath();
 	}
-	
+
 	@Test
 	public void fakeTest() {
 		assertTrue(true);
@@ -129,8 +165,8 @@ public class HelloDAOTest
 	private enum Planet {
 		SATURN(TEST_WORLD_SIID + "A", "Mimas", "Tethys", "Dione", "Rhea", "Titan"), 
 		JUPITER(TEST_WORLD_SIID + "B", "Metis", "Adrastea","Amalthea", "Thebe", "Io"), 
-		EARTH(TEST_WORLD_SIID + "C", "TheMoon");
-		String siSGUID;
+		EARTH(TEST_WORLD_SIID + "B", "TheMoon");
+		final String siSGUID;
 		List<String> moons = new ArrayList<String>();
 
 		Planet(String siSGUID, String... moonNames) {
