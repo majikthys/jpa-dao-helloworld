@@ -9,8 +9,10 @@ def schemaTargetDir = file('build/generated-sources')
 
 buildscript {
 	repositories {
+
 		mavenCentral()
 		maven { url "http://www.eviware.com/repository/maven2/" } // for SoapUI
+		
 	}
 
 	dependencies {
@@ -29,10 +31,9 @@ buildscript {
 
 
 repositories {
-    maven { url 'http://download.java.net/maven/glassfish/org/glassfish/extras' }
-	maven { url "https://code.lds.org/nexus/content/groups/main-repo" } // oracle TODO make this local repo
 	maven { url "http://www.datanucleus.org/downloads/maven2" } // datanucleus
-	
+	//maven { url 'http://download.java.net/maven/glassfish/org/glassfish/extras' }
+	maven { url "http://10.0.24.241:8000/nexus/content/repositories/thirdparty/" } // oracle TODO add this to local repo	
 }
 
 
@@ -51,6 +52,7 @@ configurations {
    
 
 dependencies {
+	
 	// ************************************* beg cargo *********************************************
 	cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
 			"org.codehaus.cargo:cargo-ant:$cargoVersion"
@@ -61,161 +63,117 @@ dependencies {
 	// ************************************* end xjc *********************************************
 
 	
-	
-	// DataNucleus JPA
-	def dataNucleusVersion="3.2.0-m4" //TODO update
-	compile "org.datanucleus:datanucleus-core:${dataNucleusVersion}"
-	compile "org.datanucleus:datanucleus-api-jpa:${dataNucleusVersion}"
-	compile "org.datanucleus:datanucleus-maven-plugin:3.2.0-m3" //TODO make this use dataNucleusVersion
+	compile fileTree(dir: 'lib', include: 'asm*.jar')
 
-	jdo  "org.datanucleus:datanucleus-enhancer:3.1.1" //dunno why their's not a more recent version
+
+//	DataNucleus JPA (retrieving from maven repo doesn't fly)
+	compile fileTree(dir: 'lib', include: 'datanucleus*.jar')
+
 	
 	//H2
-	compile "org.datanucleus:datanucleus-rdbms:${dataNucleusVersion}"
-	compile "com.h2database:h2:1.3.168"
-
-		
-	// geronimo jpa spec
+//	compile "com.h2database:h2:1.3.168"
+	
+//	// geronimo jpa spec
 	compile 'org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.1'
 
 	
-	//JAX JDO API
+//	//JAX JDO API
 	compile "javax.jdo:jdo-api:3.0"
-	
-	
-	
-	//Oracle OJDBC
-	compile 'com.oracle:ojdbc6:11.2.0.3'
-	compile 'com.oracle:ucp:11.2.0.3'
-	
-	
-	
-		
-	// for javax.ws.rs.core.Response.Status.EXPECTATION_FAILED
-	compile 'javax.ws.rs:javax.ws.rs-api:2.0-m10'
-	//providedCompile 'javax:javaee-api:6.0'
-	
-	// Tomcat
-	providedCompile "org.apache.tomcat:tomcat-servlet-api:${tomcatVersion}"
-	providedCompile "org.apache.tomcat:tomcat-catalina:${tomcatVersion}"
 
 	
+//	//Oracle OJDBC
+	compile 'com.oracle:ojdbc6:11g-11.2.0.3.0'
+	compile 'com.oracle:ucp:11g-11.2.0.3.0'
 	
-	
-	
-	
-	// simple logging facade 4 java
-	runtime "org.slf4j:slf4j-api:${slf4jVersion}"
-	providedCompile "org.slf4j:log4j-over-slf4j:${slf4jVersion}@jar"
-	providedCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}@jar"
-	providedCompile "org.slf4j:jul-to-slf4j:${slf4jVersion}@jar"
 
-	// LOG4J
-	compile "org.apache.logging.log4j:log4j-api:${log4JVersion}"
-	compile "org.apache.logging.log4j:log4j-core:${log4JVersion}"
 
-	// APACHE COMMONS
+// Tomcat
+	compile "org.apache.tomcat:tomcat-servlet-api:${tomcatVersion}"
+
+	
+//  LOG4J
+	compile "log4j:log4j:${log4JVersion}"
+
+// APACHE COMMONS
 	compile 'org.apache.commons:commons-lang3:3.1'
-	  compile 'commons-io:commons-io:2.4'
-	compile "org.apache.httpcomponents:httpclient:${apacheHttpComponentsVersion}"
-	compile "org.apache.httpcomponents:httpmime:${apacheHttpComponentsVersion}"
-	compile 'javax.mail:mail:1.4.7'
 
-	// JACKSON 1.9.x (2.x would supplant these w/ different name spaces)
-	compile "org.codehaus.jackson:jackson-core-asl:${jacksonVersion}"
-	compile "org.codehaus.jackson:jackson-mapper-asl:${jacksonVersion}"
-	compile "org.codehaus.jackson:jackson-jaxrs:${jacksonVersion}"
-	compile "org.codehaus.jackson:jackson-xc:${jacksonVersion}"
-	compile "org.codehaus.jackson:jackson-core-lgpl:${jacksonVersion}"
-	compile "org.codehaus.jackson:jackson-mapper-lgpl:${jacksonVersion}"
-	compile "org.codehaus.jackson:jackson-smile:${jacksonVersion}"
-	compile "org.codehaus.jackson:jackson-mrbean:${jacksonVersion}"
-	runtime 'javax.xml.bind:jaxb-api:2.1'
-
-	// APACHE CXF
-	compile 'org.apache.cxf:cxf-rt-frontend-jaxrs:2.7.3'
-
-
-
-	// SPRING
-	runtime 'org.springframework:spring-web:3.2.2.RELEASE'
-	runtime 'org.aspectj:aspectjrt:1.6.6'
-	runtime 'org.apache.bcel:bcel:5.2'
 	
-	// NETFLIX KARYON
-	compile "com.netflix.karyon:karyon-extensions:${karyonVersion}"
-	compile 'javax.validation:validation-api:1.0.0.GA'
-	runtime 'com.google.code.gson:gson:2.1'
-	runtime 'com.google.guava:guava:11.0.2'
-	runtime 'com.google.inject.extensions:guice-servlet:2.0'
-	runtime 'com.sun.jersey:jersey-core:1.11'
-	runtime 'com.sun.jersey.contribs:jersey-guice:1.8'
+// JACKSON 1.9.x (2.x would supplant these w/ different name spaces)
+//	compile "org.codehaus.jackson:jackson-core-asl:${jacksonVersion}"
+//	compile "org.codehaus.jackson:jackson-mapper-asl:${jacksonVersion}"
+//	compile "org.codehaus.jackson:jackson-jaxrs:${jacksonVersion}"
+//	compile "org.codehaus.jackson:jackson-xc:${jacksonVersion}"
+//	compile "org.codehaus.jackson:jackson-core-lgpl:${jacksonVersion}"
+//	compile "org.codehaus.jackson:jackson-mapper-lgpl:${jacksonVersion}"
+//	compile "org.codehaus.jackson:jackson-smile:${jacksonVersion}"
+//	compile "org.codehaus.jackson:jackson-mrbean:${jacksonVersion}"
+//	runtime 'javax.xml.bind:jaxb-api:2.1'
 
-	// Testing stuff, hamcrest comes first please.
+
+// NETFLIX KARYON
+//	compile "com.netflix.karyon:karyon-extensions:${karyonVersion}"
+//	compile 'javax.validation:validation-api:1.0.0.GA'
+//	runtime 'com.google.code.gson:gson:2.1'
+//	runtime 'com.google.guava:guava:11.0.2'
+//	runtime 'com.google.inject.extensions:guice-servlet:2.0'
+//	runtime 'com.sun.jersey:jersey-core:1.11'
+//	runtime 'com.sun.jersey.contribs:jersey-guice:1.8'
+
+// Testing stuff, hamcrest comes first please.
 	testCompile 'org.hamcrest:hamcrest-all:1.3'
-	testCompile 'org.easymock:easymock:3.0'
 	testCompile 'org.testng:testng:6.8'
 }
 
 
 
-//war {
-//    from('resources')  {
-//        include '*.properties'
-//        into 'WEB-INF/classes/'
-//    }
-//    webXml = file('src/main/webapp/WEB-INF/web.xml')
-//}
 
-
+// typical tomcat cargo settings given but commented out
 cargo {
 	containerId = 'tomcat7x'
 	port = new Integer(tomcatHttpPort)
-	
-	deployable{
-		// NOTE: Override file to make it pick up an existing war instead of that produce by running other tasks
-		//		file = file('target/contivo-conversion-service-0.0.1.war')
-		context = 'jpa-dao-example'
-
-		// wait on this URL before continuing
-//WTF????
-//        def pingURL = "http://localhost:${tomcatHttpPort}/jaxrs-service/hello/echo/SierraTangoNevada"
-	}
-
-    local {
-// NOTE: uncomment following line to use existing tomcat install
-//        homeDir = file('/Library/Tomcat') // TODO should be set from CATALINA_HOME
-        output = file('build/output.log')
-
-//TODO INTALL OUTSIDE OF BUILDDIR... SO CLEAN DOESN'T KILL TOMCAT INSTALL UNLESS EXPLICITLY TOLD TO DO SO.
-		 installer {
-	            installUrl = "http://apache.osuosl.org/tomcat/tomcat-7/v${tomcatVersion}/bin/apache-tomcat-${tomcatVersion}.zip"
-	            downloadDir = file("$buildDir/download") 
-	            extractDir = file("$buildDir/extract")
-	        }
-
-		tomcat {
-			ajpPort = new Integer(tomcatAjpPort)
-		}
-		 
-		if(containerJVMArgs) {
-			jvmArgs = "$containerJVMArgs"		
-		} else {
-			// set contivo paths
-			jvmArgs = "-Dcontivo.runtime.classpath=$buildDir/classpath -Dcontivo.runtime.map.root=$buildDir/../src/test/resources/data"
-
-			jvmArgs += "-XX:-UseSplitVerifier" 	//to support byte code injection
-		}
-		   
-		// if containerDebug, append tomcat debug args to jvm args
-		if(containerDebug) {
-			jvmArgs += " $containerDebugJVMArgs"
-		}
-		
-		logger.info "=====jvmArgs===="
-		logger.info "$jvmArgs"
-
-    }
+//	
+//	deployable{
+//		// NOTE: Override file to make it pick up an existing war instead of that produce by running other tasks
+//		//		file = file('target/contivo-conversion-service-0.0.1.war')
+//		context = 'jpa-dao-example'
+//
+//		// uncomment this to wait on a given URL before continuing
+//		//        def pingURL = "http://localhost:${tomcatHttpPort}/jaxrs-service/hello/echo/SierraTangoNevada"
+//	}
+//
+//    local {
+//// NOTE: uncomment following line to use existing tomcat install
+////        homeDir = file('/Library/Tomcat') // TODO should be set from CATALINA_HOME
+//        output = file('build/output.log')
+//
+//		 installer {
+//	            installUrl = "http://apache.osuosl.org/tomcat/tomcat-7/v${tomcatVersion}/bin/apache-tomcat-${tomcatVersion}.zip"
+//	            downloadDir = file("$buildDir/download") 
+//	            extractDir = file("$buildDir/extract")
+//	        }
+//
+//		tomcat {
+//			ajpPort = new Integer(tomcatAjpPort)
+//		}
+//		 
+//		if(containerJVMArgs) {
+//			jvmArgs = "$containerJVMArgs"		
+//		} else {
+//			// set contivo paths
+//			jvmArgs = "-Dcontivo.runtime.classpath=$buildDir/classpath -Dcontivo.runtime.map.root=$buildDir/../src/test/resources/data"
+//
+//			jvmArgs += "-XX:-UseSplitVerifier" 	//to support byte code injection
+//		}
+//		   
+//		// if containerDebug, append tomcat debug args to jvm args
+//		if(containerDebug) {
+//			jvmArgs += " $containerDebugJVMArgs"
+//		}
+//		
+//		logger.info "=====jvmArgs===="
+//		logger.info "$jvmArgs"
+//
+//    }
 	
 }
 
@@ -229,7 +187,6 @@ task makeClasspathRoot {
 
 test {
 	jvmArgs "-XX:-UseSplitVerifier" //to support byte code injection
-	
 	description = 'Just unit tests, out of container'
 	
 //	include '**/TheTest.class' //example of including/running one test
@@ -243,87 +200,46 @@ test {
             excludeGroups "$testExcludeGroups".split()
         }
     }
-	
-	// Disable the test report for the individual test task
-	test {
-		testReport = false
-	}
-	
 }
 
-task integrationTest(type: Test, dependsOn: ['test','war']) {
-	logger.info 'Integration Tests'
-	jvmArgs "-XX:-UseSplitVerifier" //to support byte code injection
-	
-	useTestNG()
-	include '**/*IT.class'
-
-	// set a system property for the test JVM(s)
-	systemProperty 'service.url', "http://localhost:${tomcatHttpPort}/jaxrs-service"
-	systemProperty 'archaius.deployment.applicationId', 'jaxrs-service'
-	systemProperty 'archaius.deployment.environment', 'dev'
-	
-	ignoreFailures true
-	
-	doFirst {
-		cargoStartLocal.execute()
-	}
-
-	doLast {
-		if (project.hasProperty('soapuiTest')) {
-			soapUiTest.execute()
-		}
-        
-		logger.info 'Stopping Tomcat server'
-		cargoStopLocal.execute()
-	}
-}
-
+// Typical integration target included for reference
+//task integrationTest(type: Test, dependsOn: ['test','war']) {
+//	logger.info 'Integration Tests'
+//	jvmArgs "-XX:-UseSplitVerifier" //to support byte code injection
+//	
+//	useTestNG()
+//	include '**/*IT.class'
 //
-//	<copy todir="${classes.dir}">
-//		<fileset dir="${resources.dir}" includes="**/*.xml"/>
-//	</copy>
+//	// set a system property for the test JVM(s)
+//	systemProperty 'service.url', "http://localhost:${tomcatHttpPort}/jaxrs-service"
+//	systemProperty 'archaius.deployment.applicationId', 'jaxrs-service'
+//	systemProperty 'archaius.deployment.environment', 'dev'
+//	
+//	ignoreFailures true
+//	
+//	doFirst {
+//		cargoStartLocal.execute()
+//	}
+//
+//	doLast {
+//		if (project.hasProperty('soapuiTest')) {
+//			soapUiTest.execute()
+//		}
+//        
+//		logger.info 'Stopping Tomcat server'
+//		cargoStopLocal.execute()
+//	}
+//}
 
-task copyDAOConfig(type: Copy) {
+// copies META-INF (including persistence.xml) to classes/main
+task copyResources(type: Copy) {
 	from "$projectDir/src/main/resources/"
 	into "$buildDir/classes/main"
 }
 
-//<target name="enhance" depends="compile,copy.metadata">
-//
-//	<!-- Define the task enhancer -->
-//	<taskdef name="enhancer" classname="org.datanucleus.enhancer.EnhancerTask">
-//		<classpath refid="run.classpath"/>
-//	</taskdef>
-//
-//	<!-- Enhance -->
-//	<enhancer classpathref="run.classpath" dir="${classes.dir}" verbose="true" api="JPA" persistenceUnit="${Name}">
-//		<sysproperty key="log4j.configuration" value="file:log4j.properties"/>
-//	</enhancer>
-//
-//</target>
-//
-//<!-- Compile properties -->
-//<!-- ================== -->
-//<property name="classes.dir" value="target/classes"/>
-//
-//<!-- Classpath for execution -->
-//<!-- ======================= -->
-//<path id="run.classpath">
-//	<fileset dir="${lib.dir}">
-//		<include name="**/*.jar"/>
-//	</fileset>
-//	<pathelement location="${classes.dir}"/>
-//	<pathelement location="${basedir}"/>
-//</path>
-//	
+task enhance (dependsOn: copyResources) << {
 
-task enhance (dependsOn: copyDAOConfig) << {
-
-	logger.info("......................................................................................................................................................");
-	logger.info("......................................................................................................................................................");
-	logger.info("......................................................................................................................................................");
-	logger.info("......................................................................................................................................................");
+	logger.info("... Enhancing ...");
 	
 	ant.taskdef(
 		name      : 'datanucleusenhancer',
@@ -342,57 +258,6 @@ task enhance (dependsOn: copyDAOConfig) << {
 }
 
 classes.dependsOn enhance
-
-
-//   dependencies {
-//	  compile 'org.datanucleus:datanucleus-core:1.1.5',
-//			  'javax.jdo:jdo2-api:2.3-eb'
-//	   jdo 'org.datanucleus:datanucleus-enhancer:1.1.4'
-//	  testCompile 'junit:junit:4.7'
-//	   
-//   }
-   
-//   task jdoEnhance << {
-//	   ant.taskdef(name: 'enhancer', classname: 'org.datanucleus.enhancer.tools.EnhancerTask', classpath: configurations.jdo.asPath)
-//	   ant.enhancer( dir: sourceSets.main.output.classesDir.canonicalPath.toURI().toString(), 
-//		   persistenceUnit: "Hello",
-//		   verbose: 'true') {
-//		   classpath {
-//			   pathelement(location: sourceSets.main.output.classesDir.canonicalPath.toURI().toString())
-//			   pathelement(path: configurations.jdo.asPath)
-//		   }
-//		   fileset(dir: sourceSets.main.output.classesDir.canonicalPath.toURI().toString()) {
-//			   include(name: '**/*.class')
-//		   }
-//	   }
-//   }
-//   
-//   classes.dependsOn jdoEnhance
-
-//
-//<!-- Copy metadata target -->
-//<!-- ==================== -->
-//<target name="copy.metadata">
-//	<copy todir="${classes.dir}">
-//		<fileset dir="${resources.dir}" includes="**/*.xml"/>
-//	</copy>
-//</target>
-//
-//<!-- Enhance target -->
-//<!-- ============== -->
-//<target name="enhance" depends="compile,copy.metadata">
-//
-//	<!-- Define the task enhancer -->
-//	<taskdef name="enhancer" classname="org.datanucleus.enhancer.EnhancerTask">
-//		<classpath refid="run.classpath"/>
-//	</taskdef>
-//
-//	<!-- Enhance -->
-//	<enhancer classpathref="run.classpath" dir="${classes.dir}" verbose="true" api="JPA" persistenceUnit="${Name}">
-//		<sysproperty key="log4j.configuration" value="file:log4j.properties"/>
-//	</enhancer>
-//	
-//</target>
 
 
 //task soapUiTest(type: JavaExec) {

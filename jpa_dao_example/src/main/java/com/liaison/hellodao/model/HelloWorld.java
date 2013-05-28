@@ -18,11 +18,11 @@ public class HelloWorld implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="HW_PGUID")
-	private String hwPguid;
+	private String helloWorldPrimaryGUID;
 
 	private String name;
 
-	@Column(name="SI_SGUID")
+	@Column(name="SI_SGUID") //What the heck is a SI_SGUID? 
 	private String siSguid;
 
 	//bi-directional many-to-one association to HelloMoon
@@ -32,12 +32,12 @@ public class HelloWorld implements Serializable {
 	public HelloWorld() {
 	}
 
-	public String getHwPguid() {
-		return this.hwPguid;
+	public String getPrimaryGUID() {
+		return this.helloWorldPrimaryGUID;
 	}
 
-	public void setHwPguid(String hwPguid) {
-		this.hwPguid = hwPguid;
+	public void setPrimaryGUID(String hwPguid) {
+		this.helloWorldPrimaryGUID = hwPguid;
 	}
 
 	public String getName() {

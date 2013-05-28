@@ -58,7 +58,7 @@ public class PropMan
 	 */
 	protected void initStubData()
 	{
-		_props.put( DB_USER, "MAXC_G2HELLO_DBA" );
+		_props.put( DB_USER, "JER_G3_G2Hello_DBA" );
 		_props.put( DB_URL, "jdbc:oracle:thin:@seadv01-db03:1521:kili1" );
 		_props.put( DB_DRIVER, "oracle.jdbc.OracleDriver" );
 		_propsSecure.put( DB_PASSWORD, "12345678" );

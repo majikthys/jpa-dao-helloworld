@@ -40,6 +40,6 @@ public class Main
         
         DAOUtil.persist( helloWorld );
     	
-    	return ( "****" + helloWorld.getHwPguid() + "****" );
+    	return ( "****" + helloWorld.getPrimaryGUID() + "****" );
     }
 }
