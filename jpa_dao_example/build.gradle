@@ -9,7 +9,7 @@ def schemaTargetDir = file('build/generated-sources')
 
 buildscript {
 	repositories {
-
+		maven { url "http://www.datanucleus.org/downloads/maven2/" } // datanucleus
 		mavenCentral()
 		maven { url "http://www.eviware.com/repository/maven2/" } // for SoapUI
 		
@@ -31,8 +31,7 @@ buildscript {
 
 
 repositories {
-	maven { url "http://www.datanucleus.org/downloads/maven2" } // datanucleus
-	//maven { url 'http://download.java.net/maven/glassfish/org/glassfish/extras' }
+	maven { url "http://www.datanucleus.org/downloads/maven2/" } // datanucleus
 	maven { url "http://10.0.24.241:8000/nexus/content/repositories/thirdparty/" } // oracle TODO add this to local repo	
 }
 
@@ -66,10 +65,18 @@ dependencies {
 	compile fileTree(dir: 'lib', include: 'asm*.jar')
 
 
-//	DataNucleus JPA (retrieving from maven repo doesn't fly)
-	compile fileTree(dir: 'lib', include: 'datanucleus*.jar')
+
+	//DataNucleus
+//	compile fileTree(dir: 'lib', include: 'datanucleus-*.jar') // DataNucleus JPA if retrieving from repo doesn't fly
+	compile 'org.datanucleus:datanucleus-api-jdo:3.2.1@jar'
+	compile 'org.datanucleus:datanucleus-api-jpa:3.2.1@jar'
+	compile 'org.datanucleus:datanucleus-core:3.2.2@jar'
+    compile 'org.datanucleus:datanucleus-maven-plugin:3.2.0-release@jar'
+	compile 'org.datanucleus:datanucleus-rdbms:3.2.1@jar'
 
 	
+	
+		
 	//H2
 //	compile "com.h2database:h2:1.3.168"
 	
@@ -125,7 +132,9 @@ dependencies {
 }
 
 
-
+task listJars << {
+	configurations.compile.each { File file -> println file.name }
+}
 
 // typical tomcat cargo settings given but commented out
 cargo {
