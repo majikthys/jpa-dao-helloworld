@@ -3,13 +3,18 @@ package com.liaison.commons.jpa;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.liaison.commons.util.settings.PersistencePropertyManager;
+import static com.liaison.commons.util.settings.PersistenceProperties.PERSISTENCE_UNIT_NAME_PROPERTY;
+
+/**
+ * Proxy for entity manager factory. 
+ * 
+ * @author max
+ */
 public class EMFactory {
-	// property of our db connection initialization query
-	public static final String PERSISTENCE_UNIT_NAME_PROPERTY = "liaison.persistenceUnitName";
 
 	protected static String getPersistenceUnitName() {
-		String persistenceUnitName = System
-				.getProperty(PERSISTENCE_UNIT_NAME_PROPERTY);
+		String persistenceUnitName = PersistencePropertyManager.instance().getProperty(PERSISTENCE_UNIT_NAME_PROPERTY);
 		if (persistenceUnitName == null) {
 			return "Hello"; // get persistence name
 		}
@@ -24,8 +29,7 @@ public class EMFactory {
 		if (_emf == null) {
 			synchronized (EMFactory.class) {
 				if (_emf == null) {
-					_emf = Persistence
-							.createEntityManagerFactory(PERISTENCE_UNIT_NAME);
+					_emf = Persistence.createEntityManagerFactory(PERISTENCE_UNIT_NAME);
 				}
 			}
 		}

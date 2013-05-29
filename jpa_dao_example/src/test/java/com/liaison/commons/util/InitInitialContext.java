@@ -18,7 +18,8 @@ import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
 
-import com.liaison.commons.util.settings.PropMan;
+import com.liaison.commons.util.settings.PersistencePropertyManager;
+import static com.liaison.commons.util.settings.PersistenceProperties.*;
 
 public class InitInitialContext {
 	public static void init() throws SQLException, ClassNotFoundException, NamingException {
@@ -82,18 +83,18 @@ public class InitInitialContext {
 
 			@Override
 			public Object lookup(String strName) throws NamingException {
-				PropMan pm = PropMan.instance();
+				PersistencePropertyManager pm = PersistencePropertyManager.instance();
 				Properties systemProps = pm.getProperties();
-				String strPassword = pm.getSecureProperty(PropMan.DB_PASSWORD);
+				char[] password = pm.getSecureProperty(DB_PASSWORD);
 
 				try {
 					// Our connection strings
 					// -----------------------
-					Class.forName(systemProps.getProperty(PropMan.DB_DRIVER));
+					Class.forName(systemProps.getProperty(DB_DRIVER));
 					DataSource ds1 = new LocalDataSource(
-							systemProps.getProperty(PropMan.DB_URL),
-							systemProps.getProperty(PropMan.DB_USER),
-							strPassword);
+							systemProps.getProperty(DB_URL),
+							systemProps.getProperty(DB_USER),
+							String.valueOf(password));
 
 					Properties props = new Properties();
 					props.put("g2:/oracleDS", ds1);

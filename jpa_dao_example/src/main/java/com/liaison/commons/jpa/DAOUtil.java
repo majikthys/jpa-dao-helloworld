@@ -6,12 +6,21 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-public class DAOUtil {
-	//property of our db connection initialization query
-	public static final String INITIALIZATION_QUERY_PROPERTY = "liaison.initializationQuery"; 
+import static com.liaison.commons.util.settings.PersistenceProperties.INITIALIZATION_QUERY_PROPERTY;
+import com.liaison.commons.util.settings.PersistencePropertyManager;
 
+/**
+ * 
+ * A set of utility methods to be used to execute persistence Operations 
+ * on JPA entities.
+ * 
+ * @author Max
+ * @see EMFactory
+ * @see Operation
+ */
+public class DAOUtil {
 	protected static String getInitialQuery() {
-		String initQuery = System.getProperty(INITIALIZATION_QUERY_PROPERTY);
+		String initQuery = PersistencePropertyManager.instance().getProperty(INITIALIZATION_QUERY_PROPERTY);
 		if (initQuery == null) {
 			return "SELECT * FROM DUAL"; //Hope it's oracle!			
 		}
@@ -58,8 +67,6 @@ public class DAOUtil {
 
 	/**
 	 * Fetches a list of (potentially heterogenous) entities via given Operation
-	 * @throws Exception wrapped during attempted execution of given Operation. Please Note:
-	 * This may include any Throwable (Errors and RuntimeExceptions)
 	 */
 	public static <T> List<T> fetch(Operation o)    {
 		EntityManager em = getEntityManager();
@@ -73,7 +80,7 @@ public class DAOUtil {
 	}
 
 
-	public static void persist(Object o)  { 
+	public static <T> void persist(T o)  { 
 		EntityManager em = getEntityManager();
 		EntityTransaction tx = em.getTransaction();
 

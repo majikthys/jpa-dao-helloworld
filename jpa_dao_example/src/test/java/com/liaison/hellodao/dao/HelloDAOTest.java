@@ -34,7 +34,6 @@ public class HelloDAOTest {
 	}
 
 	@AfterClass
-	// TODO why does this error?
 	public void tearDownAfterClass() throws Exception {
 		deleteTestData();
 	}
@@ -47,7 +46,7 @@ public class HelloDAOTest {
 	 */
 	@Test
 	public void testFindWorldsAndMoonsHappyPath() throws Exception {
-		Operation op = new Operation() {
+		Operation findSaturnWorlds = new Operation() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public <T> List<T> perform(EntityManager em)  {
@@ -57,7 +56,7 @@ public class HelloDAOTest {
 			}
 		};
 
-		List<Object[]> list = DAOUtil.<Object[]> fetch(op);
+		List<Object[]> list = DAOUtil.<Object[]> fetch(findSaturnWorlds);
 
 		List<HelloWorld> helloWorlds = new ArrayList<HelloWorld>();
 		List<HelloMoon> helloMoons = new ArrayList<HelloMoon>();
@@ -196,9 +195,7 @@ public class HelloDAOTest {
 			HelloWorld helloWorld = new HelloWorld();
 			helloWorld.setName(planet.toString());
 			helloWorld.setSiSguid(planet.getSiSGUID());
-			helloWorld.setHelloMoons(new ArrayList<HelloMoon>()); // TODO... fix
-																	// encapsulation
-
+			helloWorld.setHelloMoons(new ArrayList<HelloMoon>()); 
 			for (String moonName : planet.getMoons()) {
 				HelloMoon helloMoon = new HelloMoon();
 				helloMoon.setName(moonName);
