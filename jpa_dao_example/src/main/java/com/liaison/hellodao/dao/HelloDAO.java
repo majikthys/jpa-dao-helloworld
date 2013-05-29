@@ -12,7 +12,7 @@ import com.liaison.hellodao.query.HelloQuery;
 
 public class HelloDAO
 {
-	public List<Object []> findHelloWorld( EntityManager em, String strSIID ) throws Exception
+	public List<Object []> findHelloWorld( EntityManager em, String strSIID ) 
 	{
 		List<Object []> list = new ArrayList<Object []>();
 

@@ -50,7 +50,7 @@ public class HelloDAOTest {
 		Operation op = new Operation() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public <T> List<T> perform(EntityManager em) throws Exception {
+			public <T> List<T> perform(EntityManager em)  {
 				List<T> list = (List<T>) _dao.findHelloWorld(em,
 						normalizeSGUID(Planet.SATURN.siSGUID));
 				return ((List<T>) list);
@@ -94,7 +94,7 @@ public class HelloDAOTest {
 		Operation op = new Operation() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public <T> List<T> perform(EntityManager em) throws Exception {
+			public <T> List<T> perform(EntityManager em)  {
 				List<T> list = (List<T>) _dao.findHelloWorld(em,
 						normalizeSGUID(Planet.EARTH.siSGUID)); //We know EARTH AND JUPITER HAVE SAME SGUID
 				return ((List<T>) list);
@@ -220,7 +220,7 @@ public class HelloDAOTest {
 		Operation op = new Operation() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public <T> List<T> perform(EntityManager em) throws Exception {
+			public <T> List<T> perform(EntityManager em) {
 				Query q = em.createQuery("SELECT FROM HelloWorld hw");
 				List<T> worlds = q.getResultList();
 				for (T world : worlds) {
