@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.naming.Context;
@@ -18,10 +17,13 @@ import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
 
-import com.liaison.commons.util.settings.PersistencePropertyManager;
+import com.liaison.commons.util.settings.DecryptableConfiguration;
+import com.liaison.commons.util.settings.LiaisonConfigurationFactory;
 import static com.liaison.commons.util.settings.PersistenceProperties.*;
 
 public class InitInitialContext {
+	private static DecryptableConfiguration configuration = LiaisonConfigurationFactory.getConfiguration();
+
 	public static void init() throws SQLException, ClassNotFoundException, NamingException {
 		final class LocalDataSource implements DataSource, Serializable {
 			private static final long serialVersionUID = 1L;
@@ -83,24 +85,21 @@ public class InitInitialContext {
 
 			@Override
 			public Object lookup(String strName) throws NamingException {
-				PersistencePropertyManager pm = PersistencePropertyManager.instance();
-				Properties systemProps = pm.getProperties();
-				char[] password = pm.getSecureProperty(DB_PASSWORD);
-
 				try {
 					// Our connection strings
 					// -----------------------
-					Class.forName(systemProps.getProperty(DB_DRIVER));
+
+					//TODO move instantiation of datasource out of lookup. 
+					Class.forName(configuration.getString(DB_DRIVER));
 					DataSource ds1 = new LocalDataSource(
-							systemProps.getProperty(DB_URL),
-							systemProps.getProperty(DB_USER),
-							String.valueOf(password));
+							configuration.getString(DB_URL),
+							configuration.getString(DB_USER),
+							String.valueOf(configuration.getDecryptedCharArray(DB_PASSWORD, false)));
 
-					Properties props = new Properties();
-					props.put("g2:/oracleDS", ds1);
+					configuration.setProperty("g2:/oracleDS", ds1);
+					Object value = configuration.getProperty(strName);
 
-					Object value = props.get(strName);
-
+					
 					return ((value != null) ? value : super.lookup(strName));
 				} catch (Exception e) {
 					System.err.println("Lookup Problem " + e.getMessage());

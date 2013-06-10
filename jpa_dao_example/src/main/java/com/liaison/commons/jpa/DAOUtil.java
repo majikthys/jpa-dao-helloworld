@@ -6,8 +6,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
+import com.liaison.commons.util.settings.DecryptableConfiguration;
+import com.liaison.commons.util.settings.LiaisonConfigurationFactory;
+
 import static com.liaison.commons.util.settings.PersistenceProperties.INITIALIZATION_QUERY_PROPERTY;
-import com.liaison.commons.util.settings.PersistencePropertyManager;
 
 /**
  * 
@@ -19,12 +21,10 @@ import com.liaison.commons.util.settings.PersistencePropertyManager;
  * @see Operation
  */
 public class DAOUtil {
+	private static DecryptableConfiguration configuration = LiaisonConfigurationFactory.getConfiguration();
+
 	protected static String getInitialQuery() {
-		String initQuery = PersistencePropertyManager.instance().getProperty(INITIALIZATION_QUERY_PROPERTY);
-		if (initQuery == null) {
-			return "SELECT * FROM DUAL"; //Hope it's oracle!			
-		}
-		return initQuery;
+		return configuration.getString(INITIALIZATION_QUERY_PROPERTY, "SELECT * FROM DUAL"); // assume oracle as default
 	}
 
 	/**

@@ -67,7 +67,7 @@ dependencies {
 	
 
 
-
+	
 	//DataNucleus
 //	compile fileTree(dir: 'lib', include: 'datanucleus-*.jar') // DataNucleus JPA if retrieving from repo doesn't fly
 	compile 'org.datanucleus:datanucleus-api-jdo:3.2.1@jar'
@@ -106,6 +106,10 @@ dependencies {
 // APACHE COMMONS
 	compile 'org.apache.commons:commons-lang3:3.1'
 
+	//Apache Commons Configuration 
+	//license: Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+	compile 'commons-configuration:commons-configuration:1.9'
+	
 	
 // JACKSON 1.9.x (2.x would supplant these w/ different name spaces)
 //	compile "org.codehaus.jackson:jackson-core-asl:${jacksonVersion}"

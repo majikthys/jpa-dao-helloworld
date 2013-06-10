@@ -14,7 +14,8 @@ import org.apache.log4j.Logger;
 import oracle.ucp.jdbc.PoolDataSource;
 import oracle.ucp.jdbc.PoolDataSourceImpl;
 
-import com.liaison.commons.util.settings.PersistencePropertyManager;
+import com.liaison.commons.util.settings.DecryptableConfiguration;
+import com.liaison.commons.util.settings.LiaisonConfigurationFactory;
 import static com.liaison.commons.util.settings.PersistenceProperties.*;
 
 
@@ -30,15 +31,13 @@ public class OracleDataSource {
 			+ "/oracleDS";
 	private static final String ORACLE_CONNECTION_FACTORY = "oracle.jdbc.pool.OracleDataSource";
 	private static final String CONNECTION_POOL_NAME = "G2 Connection Pool";
+	private static DecryptableConfiguration configuration = LiaisonConfigurationFactory.getConfiguration();
 
 	static public void initOracleDataSource() throws Exception {
-		PersistencePropertyManager propertyManager = PersistencePropertyManager.instance();
-		Properties properties = propertyManager.getProperties();
-		char[] password = propertyManager.getSecureProperty(DB_PASSWORD);
-		initOracleDataSource(properties, password);
+		initOracleDataSource(configuration.getDecryptedCharArray(DB_PASSWORD, true));
 	}
 
-	static public void initOracleDataSource(Properties props, char[] password)
+	static public void initOracleDataSource(char[] password)
 			throws Exception {
 		if (bInit == true) {
 			System.out.println("JNDI already bound - verifying now");
@@ -94,17 +93,17 @@ public class OracleDataSource {
 			PoolDataSource pds = new PoolDataSourceImpl();
 
 			pds.setConnectionFactoryClassName(ORACLE_CONNECTION_FACTORY);
-			pds.setUser(props.getProperty(DB_USER));
+			pds.setUser(configuration.getString(DB_USER));
 			pds.setPassword(String.valueOf(password));
-			pds.setURL(props.getProperty(DB_URL));
+			pds.setURL(configuration.getString(DB_URL));
 			pds.setConnectionPoolName(CONNECTION_POOL_NAME);
 
 			ctx.bind(ORACLE_DATASOURCE_NAME, pds);
 
 			logger.info("Factory: " + ORACLE_CONNECTION_FACTORY);
-			logger.info("User: " + props.getProperty(DB_USER));			
+			logger.info("User: " + configuration.getString(DB_USER));			
 			logger.debug("Password: " + String.valueOf(password)); //TODO this should be removed entirely for production
-			logger.info("URL: " + props.getProperty(DB_URL));
+			logger.info("URL: " + configuration.getString(DB_URL));
 			logger.info("Poolname: " + CONNECTION_POOL_NAME);
 			logger.info("Dsname: " + ORACLE_DATASOURCE_NAME);
 

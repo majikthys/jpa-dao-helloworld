@@ -3,7 +3,8 @@ package com.liaison.commons.jpa;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.liaison.commons.util.settings.PersistencePropertyManager;
+import com.liaison.commons.util.settings.DecryptableConfiguration;
+import com.liaison.commons.util.settings.LiaisonConfigurationFactory;
 import static com.liaison.commons.util.settings.PersistenceProperties.PERSISTENCE_UNIT_NAME_PROPERTY;
 
 /**
@@ -12,13 +13,11 @@ import static com.liaison.commons.util.settings.PersistenceProperties.PERSISTENC
  * @author max
  */
 public class EMFactory {
+	private static DecryptableConfiguration configuration = LiaisonConfigurationFactory.getConfiguration();
 
+	//TODO make this throw rather than use default unit name
 	protected static String getPersistenceUnitName() {
-		String persistenceUnitName = PersistencePropertyManager.instance().getProperty(PERSISTENCE_UNIT_NAME_PROPERTY);
-		if (persistenceUnitName == null) {
-			return "Hello"; // get persistence name
-		}
-		return persistenceUnitName;
+		return configuration.getString(PERSISTENCE_UNIT_NAME_PROPERTY, "Hello");
 	}
 
 	public static final String PERISTENCE_UNIT_NAME = getPersistenceUnitName(); 
@@ -37,3 +36,5 @@ public class EMFactory {
 	}
 
 }
+
+
