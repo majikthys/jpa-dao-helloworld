@@ -17,7 +17,7 @@ import static com.liaison.commons.util.settings.PersistenceProperties.INITIALIZA
  * on JPA entities.
  * 
  * @author Max
- * @see EMFactory
+ * @see EntityManagerFactoryProxy
  * @see Operation
  */
 public class DAOUtil {
@@ -62,7 +62,7 @@ public class DAOUtil {
 	 * @return
 	 */
 	public static EntityManager getEntityManager() {
-		return (EMFactory.getEntityManagerFactory().createEntityManager());
+		return (EntityManagerFactoryProxy.getEntityManagerFactory().createEntityManager());
 	}
 
 	/**

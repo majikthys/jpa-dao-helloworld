@@ -12,7 +12,7 @@ import static com.liaison.commons.util.settings.PersistenceProperties.PERSISTENC
  * 
  * @author max
  */
-public class EMFactory {
+public class EntityManagerFactoryProxy {
 	private static DecryptableConfiguration configuration = LiaisonConfigurationFactory.getConfiguration();
 
 	//TODO make this throw rather than use default unit name
@@ -26,7 +26,7 @@ public class EMFactory {
 
 	public static EntityManagerFactory getEntityManagerFactory() {
 		if (_emf == null) {
-			synchronized (EMFactory.class) {
+			synchronized (EntityManagerFactoryProxy.class) {
 				if (_emf == null) {
 					_emf = Persistence.createEntityManagerFactory(PERISTENCE_UNIT_NAME);
 				}
