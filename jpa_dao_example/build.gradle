@@ -64,7 +64,11 @@ dependencies {
 	xjc group: 'com.sun.xml.bind', name: 'jaxb-xjc', version: '2.2.4-1'
 	// ************************************* end xjc *********************************************
 
+	//karyon-core
+	//License: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+	compile     "com.netflix.karyon:karyon-core:${karyonVersion}"
 	
+    
 
 	//Netflix Archaius (property management)
 	//License: Apache 2.0 - https://github.com/Netflix/archaius/blob/master/LICENSE 
