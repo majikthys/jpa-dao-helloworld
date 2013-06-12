@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -25,6 +24,7 @@ import static com.liaison.commons.util.settings.PersistenceProperties.*;
  */
 public class OracleDataSource {
 	protected static Logger logger = Logger.getLogger(OracleDataSource.class);
+	//TODO move statics to config
 	private static boolean bInit = false;
 	private static final String JNDI_SUB_CONTEXT_NAME = "g2:";
 	private static final String ORACLE_DATASOURCE_NAME = JNDI_SUB_CONTEXT_NAME
